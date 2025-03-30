@@ -2,6 +2,7 @@ package blockchain
 
 import (
 	"fmt"
+	"sort"
 	"time"
 	"unknownberrytrip/internal/transaction"
 )
@@ -15,6 +16,10 @@ func (bc *Blockchain) StartMining(minerAddress string) {
 			if len(bc.TransactionPool) > 0 {
 				fmt.Printf("[Mining] Started: %d transactions in pool\n", len(bc.TransactionPool))
 				transactions = bc.TransactionPool
+				// Sort by ExtraPower for priority processing
+				sort.Slice(transactions, func(i, j int) bool {
+					return transactions[i].ExtraPower > transactions[j].ExtraPower
+				})
 				bc.TransactionPool = []transaction.Transaction{}
 			} else {
 				fmt.Println("[Mining] Tick: No transactions in pool")
